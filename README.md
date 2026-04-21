@@ -1,6 +1,6 @@
 # Phaser
 <img width="2559" height="1439" alt="image" src="https://github.com/user-attachments/assets/efeb5656-6dd2-4f37-97d6-bf358b159aca" />
-A top down retro space shooter, now playable in your browser! Available at phaser.anicable.com.  
+A top down retro space shooter, now playable in your browser! Available at <a href="phaser.anicable.com"> Phaser </a>.  
 Survive as long as you can against waves of enemies that get increasingly harder as you upgrade your ship!  
 
 # Controls
