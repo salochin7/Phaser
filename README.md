@@ -14,6 +14,8 @@ Arrow - Basic enemy, follows and rams the ship.
 <img width="24" height="24" alt="arrow" src="https://github.com/user-attachments/assets/9891b6c2-ace0-409c-b4bc-6f969d715aac" />
 Zoid - Shooter enemy. Keeps its distance and shoots at the ship from afar.
 <img width="24" height="24" alt="zoid" src="https://github.com/user-attachments/assets/c066228f-5475-4a61-8731-768ab0ea2a67" />
+Kite - Sniper enemy, watch out for its powerful bullets.  
+<img width="32" height="32" alt="kite" src="https://github.com/user-attachments/assets/e9e58c33-f2f9-4c30-a9e9-3f818b4e470d" />
 
 # Power Ups
 Shield - Blocks all damage, except black holes.
