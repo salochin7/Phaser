@@ -20,6 +20,8 @@ Kite - Sniper enemy, watch out for its powerful bullets.
 # Power Ups
 Shield - Blocks all damage, except black holes.
 <img width="32" height="32" alt="shield01" src="https://github.com/user-attachments/assets/4ff2e662-de91-4497-8d7c-5e43d30a93ef" />
+Health Pack - Heals your ship!  
+<img width="16" height="16" alt="healthSymbol" src="https://github.com/user-attachments/assets/7675bc68-71be-4c21-87d3-e29f3f24727a" />
 
 # Objects/Obstacles
 Station - Upgrade your ship here. Also serves as a safe zone.  
