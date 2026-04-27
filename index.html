@@ -109,7 +109,13 @@ function showIOSHomePopup() {
 
     if (!popup || !closeButton) return;
 
-    const dismissed = localStorage.getItem("iosHomePopupDismissed") === "true";
+    let dismissed = false;
+
+    try {
+        dismissed = localStorage.getItem("iosHomePopupDismissed") === "true";
+    } catch (e) {
+        dismissed = false;
+    }
 
     if (isIOS() && !isInStandaloneMode() && !dismissed) {
         popup.style.display = "flex";
@@ -117,7 +123,11 @@ function showIOSHomePopup() {
 
     closeButton.addEventListener("click", () => {
         popup.style.display = "none";
-        localStorage.setItem("iosHomePopupDismissed", "true");
+        try {
+            localStorage.setItem("iosHomePopupDismissed", "true");
+        } catch (e) {
+            // Ignore storage errors on iOS Safari
+        }
     });
 }
 
