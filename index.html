@@ -276,21 +276,17 @@ window.addEventListener("load", () => {
               });
               
             };
-            window.addEventListener("pagehide", () => {
-                if (unityGameInstance) {
-                    try {
-                        unityGameInstance.SendMessage("GamePauseBridge", "SetPausedFromBrowser", "1");
-                    } catch (e) {}
-                }
-            });
+            document.addEventListener("visibilitychange", () => {
+    if (!unityGameInstance) return;
 
-            window.addEventListener("pageshow", () => {
-                if (unityGameInstance) {
-                    try {
-                        unityGameInstance.SendMessage("GamePauseBridge", "SetPausedFromBrowser", "0");
-                    } catch (e) {}
-                }
-            });
+    try {
+        if (document.hidden) {
+            unityGameInstance.SendMessage("GamePauseBridge", "SetPausedFromBrowser", "1");
+        } else {
+            unityGameInstance.SendMessage("GamePauseBridge", "SetPausedFromBrowser", "0");
+        }
+    } catch (e) {}
+});
       document.body.appendChild(script);
   
     </script>
