@@ -170,7 +170,7 @@ window.addEventListener("load", () => {
     </div>
     <script>
       var canvas = document.querySelector("#unity-canvas");
-
+      let unityGameInstance = null;
       // Shows a temporary message banner/ribbon for a few seconds, or
       // a permanent error message on top of the canvas if type=='error'.
       // If type=='warning', a yellow highlight color is used.
@@ -261,6 +261,7 @@ window.addEventListener("load", () => {
         createUnityInstance(canvas, config, (progress) => {
           document.querySelector("#unity-progress-bar-full").style.width = 100 * progress + "%";
               }).then((unityInstance) => {
+                unityGameInstance = unityInstance;
                 document.querySelector("#unity-loading-bar").style.display = "none";
                 if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
                     document.querySelector("#unity-fullscreen-button").style.display = "none";
@@ -273,10 +274,25 @@ window.addEventListener("load", () => {
               }).catch((message) => {
                 alert(message);
               });
+              
             };
+            window.addEventListener("pagehide", () => {
+                if (unityGameInstance) {
+                    try {
+                        unityGameInstance.SendMessage("GamePauseBridge", "SetPausedFromBrowser", "1");
+                    } catch (e) {}
+                }
+            });
 
+            window.addEventListener("pageshow", () => {
+                if (unityGameInstance) {
+                    try {
+                        unityGameInstance.SendMessage("GamePauseBridge", "SetPausedFromBrowser", "0");
+                    } catch (e) {}
+                }
+            });
       document.body.appendChild(script);
-
+  
     </script>
   </body>
 </html>
