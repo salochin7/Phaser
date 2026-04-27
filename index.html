@@ -3,6 +3,10 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <link rel="apple-touch-icon" href="favicon.png">
     <title>Anicable Studios | Phaser</title>
     <link rel="shortcut icon" href="TemplateData/Phaser.ico">
     <link rel="stylesheet" href="TemplateData/style.css">
@@ -19,6 +23,10 @@
         #unity-container {
             position: fixed;
             inset: 0;
+            padding-top: env(safe-area-inset-top);
+            padding-bottom: env(safe-area-inset-bottom);
+            padding-left: env(safe-area-inset-left);
+            padding-right: env(safe-area-inset-right);
         }
 
         #unity-canvas {
@@ -27,8 +35,96 @@
             display: block;
             background: #000;
         }
+                #ios-home-popup {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.65);
+            padding: 20px;
+        }
+
+        .ios-home-card {
+            position: relative;
+            max-width: 340px;
+            width: 100%;
+            background: #111;
+            color: white;
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 18px;
+            padding: 24px;
+            text-align: center;
+            font-family: Arial, sans-serif;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+        }
+
+        .ios-home-card h2 {
+            margin: 0 0 12px;
+            font-size: 22px;
+        }
+
+        .ios-home-card p {
+            margin: 10px 0;
+            font-size: 16px;
+            line-height: 1.4;
+        }
+
+        #ios-home-close {
+            position: absolute;
+            top: 8px;
+            right: 12px;
+            border: none;
+            background: transparent;
+            color: white;
+            font-size: 28px;
+            cursor: pointer;
+        }
     </style>
 </head>
+<script>
+function resizeCanvas() {
+    const canvas = document.getElementById("unity-canvas");
+    if (!canvas) return;
+
+    const height = window.innerHeight;
+    canvas.style.height = height + "px";
+}
+
+window.addEventListener("resize", resizeCanvas);
+window.addEventListener("load", resizeCanvas);
+function isIOS() {
+    return /iPhone|iPad|iPod/i.test(navigator.userAgent)
+        || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+}
+
+function isInStandaloneMode() {
+    return window.navigator.standalone === true || window.matchMedia('(display-mode: standalone)').matches;
+}
+
+function showIOSHomePopup() {
+    const popup = document.getElementById("ios-home-popup");
+    const closeButton = document.getElementById("ios-home-close");
+
+    if (!popup || !closeButton) return;
+
+    const dismissed = localStorage.getItem("iosHomePopupDismissed") === "true";
+
+    if (isIOS() && !isInStandaloneMode() && !dismissed) {
+        popup.style.display = "flex";
+    }
+
+    closeButton.addEventListener("click", () => {
+        popup.style.display = "none";
+        localStorage.setItem("iosHomePopupDismissed", "true");
+    });
+}
+
+window.addEventListener("load", () => {
+    setTimeout(showIOSHomePopup, 1500);
+});
+</script>
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-P5F9QEDTVM"></script>
 <script>
@@ -41,6 +137,14 @@
   <body>
     <div id="unity-container" class="unity-desktop">
       <canvas id="unity-canvas"></canvas>
+      <div id="ios-home-popup">
+        <div class="ios-home-card">
+          <button id="ios-home-close">×</button>
+          <h2>Add Phaser to your Home Screen</h2>
+          <p>For the best fullscreen experience on iPhone/iPad:</p>
+          <p><strong>Tap Share</strong> → <strong>Add to Home Screen</strong></p>
+        </div>
+      </div>
       <div id="unity-loading-bar">
         <div id="unity-logo"></div>
         <div id="unity-progress-bar-empty">
@@ -121,16 +225,16 @@
       if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
         // Mobile device style: fill the whole browser client area with the game canvas:
 
-        var meta = document.createElement('meta');
-        meta.name = 'viewport';
-        meta.content = 'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes';
-        document.getElementsByTagName('head')[0].appendChild(meta);
-        document.querySelector("#unity-container").className = "unity-mobile";
-        canvas.className = "unity-mobile";
+        // var meta = document.createElement('meta');
+        // meta.name = 'viewport';
+        // meta.content = 'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes';
+        // document.getElementsByTagName('head')[0].appendChild(meta);
+         document.querySelector("#unity-container").className = "unity-mobile";
+         canvas.className = "unity-mobile";
 
-        // To lower canvas resolution on mobile devices to gain some
-        // performance, uncomment the following line:
-        // config.devicePixelRatio = 1;
+        // // To lower canvas resolution on mobile devices to gain some
+        // // performance, uncomment the following line:
+            config.devicePixelRatio = 1;
 
 
       } else {
@@ -148,9 +252,13 @@
           document.querySelector("#unity-progress-bar-full").style.width = 100 * progress + "%";
               }).then((unityInstance) => {
                 document.querySelector("#unity-loading-bar").style.display = "none";
-                document.querySelector("#unity-fullscreen-button").onclick = () => {
-                  unityInstance.SetFullscreen(1);
-                };
+                if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+                    document.querySelector("#unity-fullscreen-button").style.display = "none";
+                } else {
+                    document.querySelector("#unity-fullscreen-button").onclick = () => {
+                        unityInstance.SetFullscreen(1);
+                    };
+                }
 
               }).catch((message) => {
                 alert(message);
